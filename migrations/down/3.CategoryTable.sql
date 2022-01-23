@@ -1,0 +1,3 @@
+START TRANSACTION;
+  DROP TABLE "category_table";
+COMMIT;

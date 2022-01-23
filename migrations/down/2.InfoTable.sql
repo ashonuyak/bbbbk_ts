@@ -1,0 +1,3 @@
+START TRANSACTION;
+  DROP TABLE "info_table";
+COMMIT;
