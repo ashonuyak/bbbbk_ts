@@ -2,7 +2,7 @@ import Router from 'koa-joi-router'
 
 const joi = Router.Joi
 
-export class Validator {
+export class UserValidator {
   static signUp: Router.Config = {
     validate: {
       type: 'json',

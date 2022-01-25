@@ -1,12 +1,13 @@
+import 'reflect-metadata'
 import Koa, { Context } from 'koa'
 import config from 'config'
 import cors from '@koa/cors'
 import Router from 'koa-router'
 import bodyParser from "koa-bodyparser"
 
-import userRouter from './user/router'
-import passport from './libs/passport/koaPassport'
-// import { errorCatcher } from './middlewares/errorCatcher'
+import userRouter from './api/UserRouter'
+import passport from './passport/KoaPassport'
+import { errorCatcher } from './middlewares/errorCatcher'
 
 export interface AppContext extends Context {}
 
@@ -20,7 +21,7 @@ app.use(cors())
 
 app.use(bodyParser())
 
-// app.use(errorCatcher)
+app.use(errorCatcher)
 
 router.use('', userRouter.middleware())
 

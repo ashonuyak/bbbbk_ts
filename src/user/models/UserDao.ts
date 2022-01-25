@@ -1,10 +1,19 @@
-import { User } from './User'
-import { Database } from '../../db'
-import { UserDto } from '../interfaces'
-import { Dao } from '../interfaces/Dao'
+import { injectable, inject } from 'inversify'
 
-export class UserDB implements Dao {
-  constructor (private readonly database: Database) {}
+import { User } from './User'
+import { DBProvider, UserDto } from '../interfaces'
+import { IUserDao } from '../interfaces/IUserDao'
+import { TYPES } from '../constants'
+import { DBService } from '../../db'
+
+@injectable()
+export class UserDao implements IUserDao {
+  private readonly database: DBProvider
+  constructor (
+    // @inject(TYPES.DBProvider) private readonly database: DBProvider
+    ) {
+      this.database =  new DBService()
+    }
   async get(id: number): Promise<UserDto.GetUser> {
     const userResponse = await this.database.query(`
       SELECT * 

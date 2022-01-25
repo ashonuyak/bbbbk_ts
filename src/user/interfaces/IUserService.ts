@@ -1,8 +1,10 @@
 import { UserDto } from '.'
-export interface Service {
+export interface IUserService {
   refresh: (token: string) => Promise<UserDto.Tokens>
 
   getAllUsers: () => Promise<UserDto.GetAllUsers>
+
+  userCreate: ({fname, lname, email, password}: UserDto.UserCreate) => Promise<void>
 
   userUpdate: ({ fname, lname, email, password, id }: UserDto.UserUpdate) => Promise<void>
 

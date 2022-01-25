@@ -1,17 +1,22 @@
 import jwt from 'jwt-simple'
 
-import { AWSS3 } from '../utils/uploadS3'
 import { ChangePasswordError } from './errors/ChangePasswordError'
 import { RefreshTokenExpiredError } from './errors/RefreshTokenExpiredError'
 import { SameEmailError } from './errors/SameEmailError'
 import { EmailCheckError } from './errors/EmailCheckError'
-import { UserDto, Service as IService } from './interfaces'
-import { UserDB } from './models/UserDB'
-import { Bcrypt } from '../bcrypt'
-import { MailgunService } from '../mailgun'
+import { UserDto, IUserService, BcryptProvider, AWSProvider, IUserDao } from './interfaces'
+import { inject, injectable } from 'inversify'
+import { TYPES } from './constants'
+import { MailgunProvider } from './interfaces'
 
-export class Service implements IService {
-  constructor (private readonly dao: UserDB, private readonly aws: AWSS3, private readonly bcrypt: Bcrypt, private readonly mailgun: MailgunService) {}
+@injectable()
+export class UserService implements IUserService {
+  constructor (
+    @inject(TYPES.UserDaoProvider) private readonly dao: IUserDao, 
+    @inject(TYPES.AWSProvider) private readonly aws: AWSProvider, 
+    @inject(TYPES.BcryptProvider) private readonly bcrypt: BcryptProvider, 
+    @inject(TYPES.MailgunProvider) private readonly mailgun: MailgunProvider
+  ) {}
   async refresh(token: string): Promise<UserDto.Tokens> {
     const decodedToken = jwt.decode(token, 'super_secret_refresh')
 
@@ -37,16 +42,14 @@ export class Service implements IService {
   }
 
   async userCreate({fname, lname, email, password}: UserDto.UserCreate): Promise<void> {
-    console.log('hello3')
     const passwordHash = await this.bcrypt.hash(password)
-    // console.log("hello4")
     await this.dao.create({ fname, lname, email, password: passwordHash }).catch((err: any) => {
       if (err.constraint === 'user_table_email_key') {
         throw new SameEmailError()
       }
       throw new Error(err.message)
     })
-    await this.mailgun.send(email)
+    this.mailgun.send(email)
   }
 
   async userUpdate({ fname, lname, email, password, id }: UserDto.UserUpdate): Promise<void> {

@@ -1,7 +1,12 @@
 import { Pool } from 'pg'
 import conf from 'config'
+import { injectable } from 'inversify'
+import 'reflect-metadata'
 
-export class Database {
+import { IDBService } from '.'
+
+@injectable()
+export class DBService implements IDBService{
   private readonly config: {
     user: string, 
     host: string,
@@ -21,11 +26,11 @@ export class Database {
     this.pool = new Pool(this.config)
   }
 
-  query(sql: any) {
+  query(sql: any): Promise<any> {
     return this.pool.query(sql)
   }
 
-  close() {
-    this.pool.end()
+  close(): Promise<void> {
+    return this.pool.end()
   }
 }

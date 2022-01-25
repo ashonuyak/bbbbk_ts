@@ -1,13 +1,18 @@
+import { injectable } from 'inversify'
 import Mailgun from "mailgun.js"
 import config from 'config'
 import FormData from "form-data"
+import 'reflect-metadata'
 
-export class MailgunService {
+import { IMailgunService } from '.'
+
+@injectable()
+export class MailgunService implements IMailgunService {
   private readonly mailgun: Mailgun
   constructor() {
     this.mailgun = new Mailgun(FormData)
   }
-  send(email: string) {
+  async send(email: string): Promise<void> {
     const client = this.mailgun.client({username: 'api', key: config.get('mailgun.mailgunApiKey')})
     
     const messageData = {

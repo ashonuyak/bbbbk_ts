@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt'
+import { injectable } from 'inversify'
+import { IBcryptService } from './interfaces/IBcryptService'
 
-export class Bcrypt {
+@injectable()
+export class BcryptService implements IBcryptService {
  hash(password: string): Promise<string> {
    return bcrypt.hash(password, 10)
  }

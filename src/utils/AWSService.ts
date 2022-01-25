@@ -1,9 +1,12 @@
 import config from 'config'
 import { fromBuffer } from 'file-type'
-
+import { injectable } from 'inversify'
 import AWS, { ConfigurationOptions } from 'aws-sdk'
 
-export class AWSS3 {
+import { IAWSService } from '.'
+
+@injectable()
+export class AWSService implements IAWSService {
   private readonly s3: AWS.S3
   private readonly options: ConfigurationOptions
   constructor() {

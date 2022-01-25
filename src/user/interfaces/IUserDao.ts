@@ -1,5 +1,9 @@
 import { UserDto } from '.'
-export interface Dao {
+import { User } from '../models/User'
+
+export interface IUserDao {
+  get: (id: number) => Promise<UserDto.GetUser>
+
   getAll: () => Promise<UserDto.GetAllUsers> 
 
   create: ({ fname, lname, email, password }: UserDto.UserCreate) => Promise<void>
@@ -13,6 +17,8 @@ export interface Dao {
   delete: (id: number) => Promise<void>
 
   getUserByEmail: (email: string) => Promise<number>
+
+  checkPassword: (email: string) => Promise<{user: User} | false>
 
   changePassword: (password: string, email: string) => Promise<void>
 
