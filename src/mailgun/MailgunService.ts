@@ -22,6 +22,7 @@ export class MailgunService implements IMailgunService {
       text: 'Please, confirm your email address.',
       html: `<a href="http://localhost:3002/user/email-confirmed/${email}">Click Here</a>`
     }
+    console.log(messageData);
     
     client.messages.create(config.get('mailgun.mailgunDomain'), messageData)
       .catch((err) => {
